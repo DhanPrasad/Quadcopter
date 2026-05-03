@@ -1,0 +1,55 @@
+Torque Test (TT)
+τ_φ = ℓk(ω₄² − ω₂²)    → for pure +roll torque, set ω₄² > ω₂²
+τ_θ = ℓk(ω₃² − ω₁²)    → for zero pitch, ω₁² = ω₃²
+τ_ψ = b(ω₂² + ω₄² − ω₁² − ω₃²)  → for zero yaw, ω₁²+ω₃² = ω₂²+ω₄²
+
+Pure Roll Test (PRT)
+W1² = 1000      (motor 1)
+W2² = 0         (motor 2 — reduced)
+W3² = 1000      (motor 3)  
+W4² = 2000      (motor 4 — increased)
+
+Results: 
+τ_φ = ℓk(2000 − 0)    = positive roll torque 
+τ_θ = ℓk(1000 − 1000) = 0  
+τ_ψ = b(0 + 2000 − 1000 − 1000) = 0 
+
+B = [positive_value; 0; 0]
+EttaDdot = [positive_phi_ddot; 0; 0]      ← only roll accelerates
+Ang_pos = [some positive φ; 0; 0]
+
+Pure Pitch Test (PPT)
+W1² = 0         (motor 1 — reduced)
+W2² = 1000      (motor 2)
+W3² = 2000      (motor 3 — increased)
+W4² = 1000      (motor 4)
+
+Results:
+τ_φ = ℓk(1000 − 1000) = 0  
+τ_θ = ℓk(2000 − 0)    = positive pitch torque 
+τ_ψ = b(1000 + 1000 − 0 − 2000) = 0 
+
+B = [0; positive_value; 0]
+EttaDdot = [0; positive_theta_ddot; 0]      ← only pitch accelerates
+
+Pure Yaw Test (PYT)
+W1² = 1000      (motor 1, CCW)
+W2² = 2000      (motor 2, CW — increased)
+W3² = 1000      (motor 3, CCW)
+W4² = 2000      (motor 4, CW — increased)
+
+Results:
+B = [0; 0; positive_value]
+EttaDdot = [0; 0; positive_psi_ddot]      ← only yaw accelerates
+
+Gyroscopic Coupling Test (GCT)
+PhiDot initial   = 1.0 rad/s    (already rolling)
+ThetaDot initial = 1.0 rad/s    (already pitching)
+PsiDot initial   = 0
+All W² = 0                       (no applied torque)
+
+Results:
+B = [0; 0; 0]            ← no applied torque
+EttaDot = [1; 1; 0]      ← non-zero rates
+C·EttaDot ≠ 0            ← gyroscopic coupling appears
+EttaDdot = J⁻¹(0 − C·EttaDot) ≠ 0   ← unexpected angular acceleration

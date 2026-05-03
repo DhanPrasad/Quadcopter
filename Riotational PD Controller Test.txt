@@ -1,0 +1,31 @@
+Pure Roll PD Test:
+INPUTS:
+  PhiDesired   = 0
+  ThetaDesired = 0
+  PsiDesired   = 0
+  Eta          = [0.1745; 0; 0]      (10° roll error, no pitch/yaw)
+
+EXPECTED COMPUTATION (at t = 0, error is constant so derivative = 0): Technically, we need to set t = 0.063 s, mathematically no time gives spike of PD controller O/P.
+  Roll error  = 0 - 0.1745 = -0.1745
+  Pitch error = 0 - 0      = 0
+  Yaw error   = 0 - 0      = 0
+  
+  PID outputs (pure proportional, since derivative of constant = 0):
+    Roll PID  output = Kp_phi   × (-0.1745) = 6 × (-0.1745) = -1.047
+    Pitch PID output = 0
+    Yaw PID   output = 0
+  
+  After inertia gain:
+    τ_φ = Ixx × (-1.047) = 4.856e-3 × (-1.047) = -0.005086
+    τ_θ = 0
+    τ_ψ = 0
+
+EXPECTED OUTPUT (Torques display):
+  Torques = [-0.005086; 0; 0]
+
+PHYSICAL INTERPRETATION:
+  Quadcopter is rolled +10°. Controller commands NEGATIVE roll torque
+  to push it back to level. Sign is correct because:
+    +φ tilt → need -τ_φ to reverse it
+
+Note*: For Pitch and Yaw, you can change 2nd and third vaalue of Eta matrix. 

@@ -1,0 +1,107 @@
+Freefall Test
+INPUTS:
+  Eta (Orientation):  [0; 0; 0]              level
+  w1² = w2² = w3² = w4² = 0                  no thrust
+
+INITIAL CONDITIONS:
+  Velocity integrator:  [0; 0; 0]            starts at rest
+  Position integrator:  [0; 0; 10]           starts 10 m up
+
+SIMULATION TIME:  1.4 seconds
+
+EXPECTED VALUES:
+  At t = 0:
+    Acceleration = [0; 0; -9.81]
+    Velocity     = [0; 0;  0   ]
+    Position     = [0; 0;  10  ]
+
+  At t = 1 s:
+    Acceleration = [0; 0; -9.81]            constant
+    Velocity     = [0; 0; -9.81]            v = -gt
+    Position     = [0; 0;  5.095]           z = 10 - ½g·t²
+
+  At t = 1.4 s:
+    Position     = [0; 0;  0.39 ]           almost at ground
+
+PASS CRITERIA:
+  Acceleration in z stays at exactly -9.81 throughout
+  Velocity in x and y stays at zero
+  Position drops parabolically (½gt² formula)
+
+Hover Thrust Balance:
+INPUTS:
+  Eta:             [0; 0; 0]     >            level orientation
+  
+  Compute hover thrust per rotor:
+    T_hover = m·g = 0.468 × 9.81 = 4.59108 N
+    Σω² = T/k = 4.59108 / 2.980e-6 = 1,540,631
+    Per rotor: 1,540,631 / 4 = 385,158
+  
+  w1² = w2² = w3² = w4² = 385158
+
+INITIAL CONDITIONS:
+  Velocity integrator:  [0; 0; 0]
+  Position integrator:  [0; 0; 5]           > starts 5 m up
+
+SIMULATION TIME:  3 seconds
+
+EXPECTED VALUES:
+  Thrust block:                4.59108 N
+  Thrust ÷ m output:           9.81 m/s²
+  DCM column output:           [0; 0; 1]
+  Thrust acceleration vector:  [0; 0; 9.81]
+  Gravity vector:              [0; 0; 9.81]
+  Drag vector:                 [0; 0; 0]
+  
+  At all times t:
+    Acceleration = [0; 0; 0]                 perfect cancellation
+    Velocity     = [0; 0; 0]                 stays at rest
+    Position     = [0; 0; 5]                 stays at 5 m
+
+PASS CRITERIA:
+  Position stays exactly at [0; 0; 5] throughout simulation
+  Velocity remains [0; 0; 0]
+  Acceleration shows [0; 0; 0]
+
+Tilted Trust Test
+This provides the horizontl acceleration
+INPUTS:
+  Eta:             [0; 0.1745; 0]            pitched +10° forward (no roll, no yaw)
+  
+  w1² = w2² = w3² = w4² = 385158             same hover thrust as Test 2
+
+INITIAL CONDITIONS:
+  Velocity integrator:  [0; 0; 0]
+  Position integrator:  [0; 0; 5]
+
+SIMULATION TIME:  1 second
+
+EXPECTED VALUES:
+  Thrust block:        4.59108 N
+  Thrust ÷ m:           9.81 m/s²
+  
+  DCM column output (at Phi=0, Theta=0.1745, Psi=0):
+    DCM1 = cos(0)·sin(0.1745)·cos(0) + sin(0)·sin(0)
+         = 1 · 0.1736 · 1 + 0 = 0.1736
+    DCM2 = cos(0)·sin(0.1745)·sin(0) − sin(0)·cos(0)
+         = 0 − 0 = 0
+    DCM3 = cos(0)·cos(0.1745) = 0.9848
+    DCM column = [0.1736; 0; 0.9848]
+  
+  Thrust acceleration vector:  9.81 × [0.1736; 0; 0.9848]
+                            = [1.703; 0; 9.659]
+  Gravity vector:              [0; 0; 9.81]
+  
+  Net acceleration at t=0 (no drag yet because v=0):
+    Acceleration = [1.703; 0; 9.659] - [0; 0; 9.81] - [0; 0; 0]
+                 = [1.703; 0; -0.151]
+At t = 1 s (drag starts to matter slightly):
+    Velocity ≈ [1.6; 0; -0.15]
+    Position ≈ [0.85; 0; 4.93]               moved forward, dropped slightly
+
+PASS CRITERIA:
+  x-acceleration ≈ +1.703 m/s² at t=0     (forward motion)
+  y-acceleration ≈ 0 throughout            (no sideways motion)
+  z-acceleration ≈ -0.151 m/s² at t=0     (slight downward drift because vertical thrust component < mg)
+  x-position increases over time          (quadcopter moves forward)
+  z-position decreases slightly            (quadcopter loses altitude)

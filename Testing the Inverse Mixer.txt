@@ -1,0 +1,51 @@
+1. Pure Hover Test:
+INPUTS:
+  T        = 4.59108           (= m·g, hover thrust)
+  TauPhi   = 0
+  TauTheta = 0
+  TauPsi   = 0
+
+EXPECTED COMPUTATION:
+  T1   = T/(4k) = 4.59108 / (4 × 2.98e-6) = 385,158
+  TauP = 0 / (2 × 2.98e-6 × 0.225) = 0
+  TauT = 0
+  TauS = 0 / (4 × 1.14e-7) = 0
+
+EXPECTED OUTPUTS:
+  Omega(1) = 385158 - 0 - 0 = 385,158
+  Omega(2) = 385158 - 0 + 0 = 385,158
+  Omega(3) = 385158 + 0 - 0 = 385,158
+  Omega(4) = 385158 + 0 + 0 = 385,158
+
+PASS CRITERIA:
+  All four outputs equal
+  All four outputs ≈ 385,158
+
+2. Pure Roll Torque Test
+INPUTS:
+  T        = 4.59108           (still maintain hover thrust)
+  TauPhi   = 0.001             (small positive roll torque)
+  TauTheta = 0
+  TauPsi   = 0
+
+EXPECTED COMPUTATION:
+  T1   = 385,158
+  TauP = 0.001 / (2 × 2.98e-6 × 0.225) = 745.7
+  TauT = 0
+  TauS = 0
+
+EXPECTED OUTPUTS:
+  Omega(1) = 385158 - 0 - 0    = 385,158       (motor 1 unchanged)
+  Omega(2) = 385158 - 745.7 + 0 = 384,412       (motor 2 slowed)
+  Omega(3) = 385158 + 0 - 0    = 385,158       (motor 3 unchanged)
+  Omega(4) = 385158 + 745.7 + 0 = 385,904       (motor 4 sped up)
+
+PASS CRITERIA:
+  Motors 1 and 3 unchanged (front-back pair)
+  Motor 4 (left) increased
+  Motor 2 (right) decreased
+  Difference Omega(4) - Omega(2) ≈ 1491 (= 2 × 745.7)
+  Sum Omega(1)+Omega(2)+Omega(3)+Omega(4) ≈ 4 × 385158 (thrust unchanged)
+
+Do the same for pitch and yaw by just providing some non-zero values at a time.
+
