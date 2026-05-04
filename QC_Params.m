@@ -1,5 +1,3 @@
-%  Run automatically on model open via InitFcn callback
-
 % Physical
 m  = 0.468;       % mass (kg)
 g  = 9.81;        % gravity (m/s^2)
